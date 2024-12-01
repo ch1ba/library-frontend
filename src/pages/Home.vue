@@ -35,10 +35,15 @@
                 params.sortBy = filters.sortBy
             }
 
+            const token = localStorage.getItem('jwt');
+
             console.log(params)
 
             const response = await axios.get(`http://localhost:3000/api/books`,{
-                params
+                params,
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             });
             items.value = response.data;
             

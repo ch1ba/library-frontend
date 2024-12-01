@@ -1,68 +1,67 @@
+vue
+
 <template>
-    <div class="min-h-screen bg-gray-100 flex flex-col justify-center items-center p-4 space-y-8">
-      <div v-if="book" class="max-w-4xl w-full bg-white shadow-2xl rounded-xl overflow-hidden flex flex-col md:flex-row">
-        <!-- Left Side: Book Cover and Basic Info -->
-        <div 
-          class="relative w-full md:w-2/5 h-[500px] flex flex-col justify-center items-center text-center p-8"
-          :style="{ backgroundColor: getRandomColor() }"
-        >
-          <span class="absolute inset-0 text-white text-[200px] opacity-10 flex justify-center items-center font-bold">
-            {{ book.title[0].toUpperCase() }}
-          </span>
-          
-          <div class="z-10 text-white">
-            <h1 class="text-3xl font-bold mb-4">{{ book.title }}</h1>
-            <p class="text-2xl font-semibold mb-6">{{ book.author.trim() }}</p>
-            
-            <div class="bg-white bg-opacity-20 rounded-lg p-4 mt-6">
-              <p class="text-white text-opacity-90 text-lg font-medium">
-                {{ book.genre }}
-              </p>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Right Side: Detailed Information -->
-        <div class="w-full md:w-3/5 p-8 flex flex-col justify-between">
-          <div>
-            <div class="mb-6">
-              <span class="text-gray-600 text-lg font-semibold block mb-2">Аннотация:</span>
-              <p class="text-gray-800 text-base leading-relaxed">{{ book.annotation }}</p>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4 mb-6 text-base">
-              <div>
-                <span className="text-gray-500 block">Год издания:</span>
-                <p className="font-semibold text-gray-800">{{ book.publication_year }}</p>
-              </div>
-              <div>
-                <span className="text-gray-500 block">ISBN:</span>
-                <p className="font-semibold text-gray-800">{{ book.isbn }}</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
-            <div>
-              <span className="text-gray-500 text-base block">Цена:</span>
-              <p className="text-3xl font-bold text-blue-600">
-                {{ book.price.toLocaleString() }} руб.
-              </p>
-            </div>
-            
-            <button 
-              className="bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600 transition-colors text-base font-semibold"
-              @click="addToCart"
-            >
-              Добавить в корзину
-            </button>
+  <div class="min-h-screen bg-gray-100 flex flex-col justify-center items-center p-4 space-y-8">
+    <!-- Если книга найдена -->
+    <div 
+      v-if="book" 
+      class="max-w-4xl w-full bg-white shadow-2xl rounded-xl overflow-hidden flex flex-col md:flex-row"
+    >
+      <!-- Левая сторона: информация о книге -->
+      <div 
+        class="relative w-full md:w-2/5 h-[500px] flex flex-col justify-center items-center text-center p-8"
+        :style="{ backgroundColor: getRandomColor() }"
+      >
+        <span class="absolute inset-0 text-white text-[200px] opacity-10 flex justify-center items-center font-bold">
+          {{ book.title[0].toUpperCase() }}
+        </span>
+        <div class="z-10 text-white">
+          <h1 class="text-3xl font-bold mb-4">{{ book.title }}</h1>
+          <p class="text-2xl font-semibold mb-6">{{ book.author.trim() }}</p>
+          <div class="bg-white bg-opacity-20 rounded-lg p-4 mt-6">
+            <p class="text-white text-opacity-90 text-lg font-medium">{{ book.genre }}</p>
           </div>
         </div>
       </div>
-      
-    <div class="max-w-4xl w-full bg-white shadow-lg rounded-xl p-8">
+
+      <!-- Правая сторона: подробная информация -->
+      <div class="w-full md:w-3/5 p-8 flex flex-col justify-between">
+        <div>
+          <div class="mb-6">
+            <span class="text-gray-600 text-lg font-semibold block mb-2">Аннотация:</span>
+            <p class="text-gray-800 text-base leading-relaxed">{{ book.annotation }}</p>
+          </div>
+          <div class="grid grid-cols-2 gap-4 mb-6 text-base">
+            <div>
+              <span class="text-gray-500 block">Год издания:</span>
+              <p class="font-semibold text-gray-800">{{ book.publication_year }}</p>
+            </div>
+            <div>
+              <span class="text-gray-500 block">ISBN:</span>
+              <p class="font-semibold text-gray-800">{{ book.isbn }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
+          <div>
+            <span class="text-gray-500 text-base block">Цена:</span>
+            <p class="text-3xl font-bold text-blue-600">
+              {{ book.price.toLocaleString() }} руб.
+            </p>
+          </div>
+          <button 
+            class="bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600 transition-colors text-base font-semibold"
+            @click="addToCart"
+          >
+            Добавить в корзину
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Блок отзывов -->
+    <div v-if="book" class="max-w-4xl w-full bg-white shadow-lg rounded-xl p-8">
       <h2 class="text-2xl font-bold mb-6 text-gray-800">Отзывы читателей</h2>
-      
       <div class="space-y-6">
         <div 
           v-for="(review, index) in reviews" 
@@ -90,10 +89,21 @@
         </div>
       </div>
     </div>
+
+    <!-- Если книга не найдена -->
+    <div v-else class="flex flex-col items-center text-center">
+      <img 
+        src="/emoji-1.png" 
+        alt="Книга не найдена" 
+        class="w-32 h-32 mb-6"
+      />
+      <p class="text-xl text-gray-600 font-semibold">Увы, такой книги нет</p>
+    </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data() {
     return {
@@ -122,17 +132,18 @@ export default {
   },
   methods: {
     fetchBookDetails(bookId) {
-      fetch(`http://localhost:3000/api/books/${bookId}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Сетевая ошибка при получении данных о книге');
-          }
-          return response.json();
+      const token = localStorage.getItem('jwt'); // Здесь вы можете получить токен из localStorage, Vuex или другого хранилища
+
+      axios.get(`http://localhost:3000/api/books/${bookId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
         })
-        .then(data => {
-          this.book = data;
+        .then(response => {
+          this.book = response.data; 
         })
         .catch(error => {
+          this.book = null
           console.error("Ошибка при загрузке данных о книге:", error);
         });
     },
