@@ -7,36 +7,43 @@
         :title="item.title"
         :author="item.author"
         :price="item.price"
-        :onClickAdd="onClickAdd"
-        @click.native="goToBookDetail(item.id)"
+        :onClickAdd="() => addToCart(item)"
+        :isAdded="item.isAdded"
+        :onClickPhoto="() => goToBookDetail(item.id)" 
         />
     </div>
 </template>
 
 
-<script>
+<script setup>
+import { defineProps, defineEmits } from 'vue';
+import { useRouter } from 'vue-router';
 import Book from './Book.vue';
-import Card from './Card.vue';
+import { useStore } from 'vuex/dist/vuex.cjs.js';
 
-export default {
-    components: {
-        Book,
-        Card
-    },
-    props: {
-        items: {
-            type: Array,
-            required: true
-        }
-    },
-    methods: {
-        onClickAdd() {
-            alert("добавить");
-        },
-        goToBookDetail(id) {
-          this.$router.push({ name: 'BookDetail', params: { id } }); // Переход к странице книги по ID
-        }
-    },
+// Определяем пропсы
+const props = defineProps({
+    items: {
+        type: Array,
+        required: true
+    }
+});
+
+// Определяем события
+const router = useRouter();
+
+// Метод для добавления книги в корзину
+
+const store = useStore();
+
+const addToCart = (item) => {
+    store.dispatch('addToCart', item); // Вызываем действие для добавления товара в корзину
+};
+
+// Метод для перехода на страницу книги
+const goToBookDetail = (id) => {
+    // Используем router для перехода по ID книги
+    router.push({ name: 'BookDetail', params: { id } });
 };
 </script>
 

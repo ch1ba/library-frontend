@@ -1,35 +1,29 @@
 <template>
-
-    <div class="grid grid-cols-4 gap-5">
-        <Book
-        v-for = "item in items"
-        v-bind:key="item.key"
-        :title="item.title"
-        :author="item.author"
-        :price="item.price"
-        :onClickAdd="onClickAdd"
+    <div v-auto-animate class="flex flex-col justify-between">
+        <CartItem 
+            v-for="item in cart" 
+            :key="item.id"
+            :title="item.title"
+            :author="item.author"
+            :price="item.price"
+            :onClickRemove="() => {removeFromCart(item.id)}"
         />
     </div>
 </template>
 
+<script setup>
+import { useStore } from 'vuex';
+import CartItem from './CartItem.vue'; 
 
-<script>
-import CartItem from './CartItem.vue';
+const store = useStore();
 
-export default {
-    components: {
-        CartItem
-    },
-    props: {
-        items: {
-            type: Array,
-            required: true
-        }
-    },
-    methods: {
-        onClickAdd() {
-            alert("добавить");
-        }
-    },
+
+const removeFromCart = (item) => {
+    store.dispatch('removeFromCart', item); // Вызываем действие для добавления товара в корзину
 };
+
+const cart = store.getters.cartItems;
 </script>
+
+<style scoped>
+</style>

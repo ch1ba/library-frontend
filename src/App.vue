@@ -1,7 +1,7 @@
 <template>
     <div v-if="showContent" class="bg-white w-4/5 m-auto rounded-xl shadow-xl mt-14">
         <Header v-if="!isLoginOrRegister" />
-        <Cart v-if="cartOpen && !isLoginOrRegister" />
+        <Cart v-if="cartOpen && !isLoginOrRegister"/>
         <router-view></router-view>
     </div>
 
@@ -26,17 +26,24 @@ export default {
         const route = useRoute();
 
         const openCart = () => {
+            console.log("открылась")
             cartOpen.value = true;
         };
 
         const closeCart = () => {
+            console.log("закрылась")
             cartOpen.value = false;
         };
 
+    
+
         provide('cartActions', {
             openCart,
-            closeCart
+            closeCart,
+            
         });
+
+
 
         const isAuthenticated = ref(!!localStorage.getItem('jwt'));
 
@@ -61,7 +68,7 @@ export default {
             cartOpen,
             isAuthenticated,
             isLoginOrRegister,
-            showContent
+            showContent,
         };
     }
 };

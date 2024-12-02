@@ -9,6 +9,7 @@ import Oplata from './components/Oplata.vue'
 import BookDetail from './components/BookDetail.vue'
 import Login from './components/Login.vue'
 import Register from './components/Register.vue'
+import store from './store';
 
 
 const app = createApp(App);
@@ -70,5 +71,6 @@ router.beforeEach((to, from, next) => {
 
 app.use(autoAnimatePlugin);
 app.use(router)
+app.use(store)
 
 app.mount('#app')

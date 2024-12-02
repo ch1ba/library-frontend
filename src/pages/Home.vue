@@ -1,5 +1,5 @@
 <script setup>
-    import {onMounted, reactive,watch,ref} from 'vue'; 
+    import {onMounted, reactive,watch,ref, provide} from 'vue'; 
     import axios from 'axios';
     import BookList from '../components/BookList.vue';
 
@@ -90,6 +90,7 @@
 
     onMounted(fetchBooks)
     onMounted(loadGenres)
+
 
 
     watch(filters, fetchBooks)

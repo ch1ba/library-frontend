@@ -1,7 +1,8 @@
 <template>
     <div class="flex flex-col items-center m-10" >
         <div class="border border-slate-100 rounded-lg p-4 cursor-pointer hover:-translate-y-2 hover:shadow-xl transition">
-            <div 
+            <div
+                @click="onClickPhoto" 
                 class="relative w-64 h-80 rounded-lg shadow-md flex flex-col justify-center items-center"
                 :style="{ backgroundColor: randomColor }"
             >
@@ -22,54 +23,55 @@
     </div>
 </template>
 
-<script>
-export default {
-    props: {
-        title: {
-            type: String,
-            required: true
-        },
-        author: {
-            type: String,
-            required: true
-        },
-        price: {
-            type: Number,
-            required: true
-        },
-        isAdded: {
-            type: Boolean,
-            default: false
-        },
-        onClickAdd: {
-            type: Function,
-            required: true 
-        }
+<script setup>
+import { defineProps, computed } from 'vue';
+
+// Определяем пропсы
+const props = defineProps({
+    title: {
+        type: String,
+        required: true
     },
-    data() {
-        return {
-        };
+    author: {
+        type: String,
+        required: true
     },
-    computed: {
-        randomColor() {
-            const colors = [
-                '#498E7A', 
-                '#755D51', 
-                '#398D99', 
-                '#607168', 
-                '#4A6E5A', 
-                '#818B68', 
-                '#576185', 
-                '#8F4C4C',
-                '#506F8F',
-                '#946D91',
-                '#525252',
-            ];
-            const randomIndex = Math.floor(Math.random() * colors.length);
-            return colors[randomIndex];
-        }
+    price: {
+        type: Number,
+        required: true
     },
-};
+    isAdded: {
+        type: Boolean,
+        default: false
+    },
+    onClickAdd: {
+        type: Function,
+        required: true 
+    },
+    onClickPhoto: {
+        type: Function,
+        required: true 
+    }
+});
+
+// Вычисляемое свойство для случайного цвета
+const randomColor = computed(() => {
+    const colors = [
+        '#498E7A', 
+        '#755D51', 
+        '#398D99', 
+        '#607168', 
+        '#4A6E5A', 
+        '#818B68', 
+        '#576185', 
+        '#8F4C4C',
+        '#506F8F',
+        '#946D91',
+        '#525252',
+    ];
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    return colors[randomIndex];
+});
 </script>
 
 <style scoped>

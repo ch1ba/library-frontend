@@ -130,18 +130,22 @@
           </div>
         </div>
 
-        <router-link to="/">
-          <button class="card-form__button">
-            Оплатить
-          </button>
-        </router-link>
+        <div class="flex justify-between items-center text-lg font-semibold mt-4 p-2 border rounded-lg bg-gray-50">
+          <span class="text-gray-700">К оплате:</span>
+          <span class="text-blue-500">{{ paymentAmount }} ₽</span>
+        </div>
+
+        <button @click="handlePayment" class="card-form__button">
+          Оплатить
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-
+import { useRouter } from 'vue-router';
+import store from '../store';
 export default {
   data() {
     return {
@@ -155,7 +159,11 @@ export default {
       otherCardMask: "#### #### #### ####",
       cardNumberTemp: "",
       isCardFlipped: false,
+      paymentAmount: 0
     };
+  },
+  created() {
+    this.paymentAmount = store.getters.totalAmount
   },
   mounted() {
     this.cardNumberTemp = this.otherCardMask;
@@ -165,6 +173,11 @@ export default {
     flipCard (status) {
       this.isCardFlipped = status;
     },
+    
+    handlePayment() {
+      store.dispatch('clearCart'); // Очищаем корзину
+      this.$router.push('/'); // Переход на главную страницу
+    }
   }
 };
 </script>

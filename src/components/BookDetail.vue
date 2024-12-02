@@ -1,5 +1,3 @@
-vue
-
 <template>
   <div class="min-h-screen bg-gray-100 flex flex-col justify-center items-center p-4 space-y-8">
     <!-- Если книга найдена -->
@@ -19,7 +17,7 @@ vue
           <h1 class="text-3xl font-bold mb-4">{{ book.title }}</h1>
           <p class="text-2xl font-semibold mb-6">{{ book.author.trim() }}</p>
           <div class="bg-white bg-opacity-20 rounded-lg p-4 mt-6">
-            <p class="text-white text-opacity-90 text-lg font-medium">{{ book.genre }}</p>
+            <p class="text-white text-opacity-90 text-lg font-medium">{{ genre }}</p>
           </div>
         </div>
       </div>
@@ -95,7 +93,7 @@ vue
       <img 
         src="/emoji-1.png" 
         alt="Книга не найдена" 
-        class="w-32 h-32 mb-6"
+        class="w-32 h-auto mb-6"
       />
       <p class="text-xl text-gray-600 font-semibold">Увы, такой книги нет</p>
     </div>
@@ -103,67 +101,91 @@ vue
 </template>
 
 <script>
-import axios from 'axios'
+import axios from 'axios';
+import store from '../store';
+
 export default {
   data() {
     return {
       book: null,
+      genre: '',
       reviews: [
         {
           name: "Анна Петрова",
           rating: 5,
-          text: "Невероятно глубокое и захватывающее произведение! Каждая страница заставляет задуматься о человеческой природе и исторических процессах. Толстой - абсолютный гений.",
+          text: "Невероятно глубокое и захватывающее произведение! Каждая страница заставляет задуматься о человеческой природе и исторических процессах.",
           date: "2 недели назад"
         },
         {
           name: "Михаил Смирнов",
           rating: 4,
-          text: "Эпический роман, который не оставляет равнодушным. Детальное описание быта и психологии персонажей просто великолепно. Местами немного сложно читается, но того стоит.",
+          text: "Эпический роман, который не оставляет равнодушным.",
           date: "1 месяц назад"
         },
         {
           name: "Елена Кузнецова",
           rating: 5,
-          text: "Шедевр мировой литературы! Глубина характеров, философские размышления о войне и мире - это то, что делает книгу вне времени. Рекомендую каждому.",
+          text: "Шедевр мировой литературы! Глубина характеров и философские размышления - это то, что делает книгу вне времени.",
           date: "3 недели назад"
         }
       ]
     };
   },
+  
   methods: {
     fetchBookDetails(bookId) {
-      const token = localStorage.getItem('jwt'); // Здесь вы можете получить токен из localStorage, Vuex или другого хранилища
+      const token = localStorage.getItem('jwt');
 
       axios.get(`http://localhost:3000/api/books/${bookId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`, 
-          },
-        })
-        .then(response => {
-          this.book = response.data; 
-        })
-        .catch(error => {
-          this.book = null
-          console.error("Ошибка при загрузке данных о книге:", error);
-        });
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+      })
+      .then(response => {
+        this.book = response.data;
+        this.getGenreName(this.book.genre_id);
+        console.log(this.genre)
+      })
+      .catch(error => {
+        this.book = null;
+        console.error("Ошибка при загрузке данных о книге:", error);
+      });
     },
+
     getRandomColor() {
-      const colors = [
-        '#3B82F6', // Blue
-        '#10B981', // Green
-        '#6366F1', // Indigo
-        '#8B5CF6', // Purple
-        '#EC4899'  // Pink
-      ];
+      const colors = ['#3B82F6', '#10B981', '#6366F1', '#8B5CF6', '#EC4899'];
       return colors[Math.floor(Math.random() * colors.length)];
     },
+
     addToCart() {
-      alert(`Книга "${this.book.title}" добавлена в корзину`);
+      store.dispatch('addToCart', this.book);
+    },
+
+    async getGenreName(genreId) {
+      const token = localStorage.getItem('jwt');
+      
+      try {
+        const response = await axios.get(`http://localhost:3000/api/genres/${genreId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        
+        this.genre = response.data; 
+      } catch (error) {
+        console.error('Ошибка при получении жанра:', error);
+      }
     }
   },
+
   created() {
     const bookId = this.$route.params.id;
     this.fetchBookDetails(bookId);
   }
 };
 </script>
+
+<style scoped>
+/* Ваши стили */
+</style>
+
