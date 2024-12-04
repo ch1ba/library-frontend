@@ -25,7 +25,7 @@ export default {
     methods: {
         async register() {
             try {
-                const response = await fetch('http://localhost:3000/api/auth/register', {
+                const response = await fetch('http://80.87.202.240:3000/api/auth/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

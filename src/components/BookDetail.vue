@@ -136,7 +136,7 @@ export default {
     fetchBookDetails(bookId) {
       const token = localStorage.getItem('jwt');
 
-      axios.get(`http://localhost:3000/api/books/${bookId}`, {
+      axios.get(`http://80.87.202.240:3000/api/books/${bookId}`, {
         headers: {
           Authorization: `Bearer ${token}`, 
         },
@@ -165,7 +165,7 @@ export default {
       const token = localStorage.getItem('jwt');
       
       try {
-        const response = await axios.get(`http://localhost:3000/api/genres/${genreId}`, {
+        const response = await axios.get(`http://80.87.202.240:3000/api/genres/${genreId}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }

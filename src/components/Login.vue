@@ -42,7 +42,7 @@ const error = ref('')
 
 const login = async () => {
   try {
-    const response = await axios.post('http://localhost:3000/api/auth/login', {
+    const response = await axios.post('http://80.87.202.240:3000/api/auth/login', {
       email: email.value,
       password: password.value
     })      
