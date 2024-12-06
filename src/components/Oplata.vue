@@ -146,6 +146,8 @@
 <script>
 import { useRouter } from 'vue-router';
 import store from '../store';
+import { ref } from 'vue';
+import axios from 'axios';
 export default {
   data() {
     return {
@@ -162,6 +164,48 @@ export default {
       paymentAmount: 0
     };
   },
+  setup() {
+    const userId = ref(null);
+    const cartId = ref(null); 
+
+    const fetchUserProfile = async () => {
+      try {
+        const token = localStorage.getItem('jwt'); // Получаем JWT токен из локального хранилища
+        const response = await axios.get('http://localhost:3000/api/auth/profile', {
+          headers: {
+            Authorization: `Bearer ${token}` // Передаем токен в заголовках
+          }
+        });
+        userId.value = response.data.id;
+        await fetchCart(response.data.id) 
+      } catch (error) {
+        console.error('Ошибка при получении профиля пользователя:', error);
+        alert('Не удалось получить данные профиля пользователя.');
+      }
+    };
+
+
+    const fetchCart = async (userId) => {
+      try {
+        const token = localStorage.getItem('jwt');
+        const response = await axios.get(`http://localhost:3000/api/cart/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${token}` // Добавляем токен в заголовок
+            }
+        });
+        cartId.value = response.data.id; // Сохраняем cart_id из ответа
+        console.log(cartId.value);
+      } catch (error) {
+        console.error('Ошибка при получении корзины:', error);
+        alert('Не удалось получить корзину.');
+      }
+    };
+
+    // Вызываем функцию для получения профиля при загрузке компонента
+    fetchUserProfile();
+
+    return { userId, cartId }; // Возвращаем userId, чтобы использовать его в шаблоне, если нужно
+  },
   created() {
     this.paymentAmount = store.getters.totalAmount
   },
@@ -174,9 +218,39 @@ export default {
       this.isCardFlipped = status;
     },
     
-    handlePayment() {
-      store.dispatch('clearCart'); // Очищаем корзину
-      this.$router.push('/'); // Переход на главную страницу
+    async handlePayment() {
+      // Получаем элементы корзины из Vuex store
+      const cartItems = store.getters.cartItems; // Предполагается, что у вас есть getter getCartItems
+
+      // Проверяем, есть ли элементы в корзине
+      if (cartItems.length === 0) {
+          alert('Корзина пуста!');
+          return;
+      }
+
+      try {
+        const token = localStorage.getItem('jwt');
+        // Отправляем данные на сервер для добавления в базу данных
+        await Promise.all(cartItems.map(item => {
+              return axios.post('http://localhost:3000/api/createCartItems', {
+                  cart_id: this.cartId, 
+                  user_id: this.userId, 
+                  book_id: item.id, 
+                  book_name: item.title,
+                  book_author: item.author 
+              }, {
+                  headers: {
+                      Authorization: `Bearer ${token}`
+                  }
+              });
+        }));
+        localStorage.removeItem('isCreated');
+        store.dispatch('clearCart'); 
+        this.$router.push('/'); 
+      } catch (error) {
+          console.error('Ошибка при добавлении элементов корзины:', error);
+          alert('Не удалось обработать платеж. Попробуйте еще раз.');
+      }
     }
   }
 };

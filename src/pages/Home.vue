@@ -20,7 +20,7 @@
             // Извлекаем JWT из локального хранилища
             const token = localStorage.getItem('jwt'); // Убедитесь, что ключ указан правильно
 
-            const response = await axios.get('http://80.87.202.240:3000/api/genres', {
+            const response = await axios.get('http://localhost:3000/api/genres', {
             headers: {
                 'Authorization': `Bearer ${token}`, // Включаем JWT в заголовок Authorization
                 'Content-Type': 'application/json'
@@ -68,7 +68,7 @@
 
             console.log(params)
 
-            const response = await axios.get(`http://80.87.202.240:3000/api/books`,{
+            const response = await axios.get(`http://localhost:3000/api/books`,{
                 params,
                 headers: {
                     Authorization: `Bearer ${token}`
